@@ -1,0 +1,18 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<%
+		//全部注销
+		session.invalidate();
+		//选择性清除cookie注销
+		//session.removeAttribute("uname");
+		response.sendRedirect("login.jsp");
+	%>
+</body>
+</html>
