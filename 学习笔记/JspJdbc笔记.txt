@@ -1,0 +1,43 @@
+1、JDBC：Java Database Connectivity 可以为多种关系型数据库DBMS提供统一的访问接口
+2、JDBC  API  主要功能：
+三件事，具体通过一下类/接口实现：
+DriverManager ：管理JDBC驱动
+Connection ：连接（通过DriverManager产生）
+Statement（PreparedStatement）：增删改查（通过Connection 产生）
+CallableStatement：调用数据库中的 存储过程/存储函数（通过Connection 产生）
+ResultSet：返回的结果集 （通过上面的Statement等产生）
+
+Connection产生操作数据库的对象：
+
+Connection产生Statement对象：createStatement()
+Connection产生PreparedStatement对象：PreparedStatement()
+Connection产生CallableStatement对象：prepareCall()
+
+Statement操作数据库：
+增删改：executeUpdate()
+查询：executeQuery();
+
+PreparedStatement操作数据库
+
+
+
+
+
+3、jdbc访问数据库的具体步骤
+a、导入驱动，加载具体的驱动类
+b、与数据库建立连接
+c、发送ssql，执行
+d、处理结果集 （查询）
+4、数据库驱动
+		驱动jar				具体驱动类				连接字符串
+Oracle		ojdbc-x.jar			oracle.jdbc.OracleDriver			jdbc:oracle:thin:@localhostt:1521:ORCL
+MySQL		mysql-connector-java-x.jar		com.mysql.jdbc.Driver			jdbc:mysql://localhost:3306/库名
+SQLServer	sqljdbc-x.jar			com.microsoft.sqlserver.jdbc.SQLServerDriver	jdbc:microsoft:sqlserver:localhost:1433;databasename=库名
+使用jdbc操作数据库时，如果对数据库进行了更换，只需要替换：驱动、具体驱动类、连接字符串、用户名、密码。
+
+Sql注入：将客户输入的内容和开发人员的SQL语句混为一体。
+
+
+
+
+

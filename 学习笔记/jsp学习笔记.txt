@@ -1,0 +1,143 @@
+jsp九大对象：（自带的，不需要new，也能使用的对象）
+1、out：输出对象，向客户端输出内容
+2、request：请求对象；存储“客户端向服务端发送的请求信息”
+request对象的常见方法：
+String getParameter(String name):根据请求的字段名key，返回字段的值
+String[] getParameter(String name):根据请求的字段名key，返回多个字段的值value
+void setCharacterEncoding("编码格式utf-8"):设置请求编码
+getRequestDispatcher("b.jsp").forward(request,response);:请求转发的方式跳转
+ServletContext getServerContext():获取项目的ServletContext对象
+
+3、response：响应对象
+提供的方法：
+void addCookie(Cookie cookie); 服务端向客户端增加cookie对象
+void sendRedirect(String location) throws IOException; :页面跳转的一种方式（重定向）
+void setContetType(String type):设置服务端响应的编码(设置服务端的contentType类型)
+请求转发和重定向的区别：
+		请求转发		重定向
+地址栏是否改变	不变		改变
+
+是否保留第一次	保留		不保留
+请求时的数据
+
+请求的次数	1次		2次
+
+跳转发生的位置	服务器		客户端发出的第二次跳转
+
+4、session：会话（服务端）
+cookie和session的区别：
+			session		cookie
+保存的位置		服务端		客户端
+安全性			较安全		较不安全
+保存的内容 		Object		String	
+
+
+
+session机制：
+客户第一次请求服务端时，服务端会产生一个session对象（用于保存该客户的信息）；
+并且每个session对象都会有一个唯一的sessionID（用于区分其他session）；
+服务端又会产生一个cookie，并且该cookie的name=JSESSIONID,value=服务端sessionID的值；
+然后服务端会在响应客户端的同时，将该cookie发送给客户端，至此客户端就有了一个cookie(JSESSIONID)
+因此，客户端的cookie就可以和服务端的session一一对应（JSESSIONID ——sessionID）
+客户端第2/n次请求服务端时：服务端会先用客户端cookie中的JSESSIONID去服务端的session中匹配sessionid，如果匹配成功（cookie jsessionid和session sessionid），说明此用户不是第一次访问，无需登录；
+a、session存储在服务端
+b、session实在同一个用户请求时共享
+c、实现机制：第一次客户请求时产生一个sessionid并复制给cookie的jsessionid然后发给客户端。
+session方法：
+String getId() :获取sessionId
+boolean isNew() :判断是否时新用户（第一次访问）
+void invalidate() :使session失效  （退出登录，注销）
+void setAttribute() ;
+Object getAttribute() ;
+void setMaxInactiveInterval(秒) :设置最大有效 非活动时间
+int getMaxInactiveInterval():获取最大有效非活动时间
+
+cookie（客户端，不是内置对象）：Cookie是由服务端生成的，再发送给客户端保存。
+相当于本地缓存的作用。
+作用：提高访问服务器的效率，但是安全性较差。
+Cookie：name=value
+javax.sevlet.http.Cookie
+public Cookie(String name,String value)
+String getName()
+String getValue()
+void setMaxAge(int expiry);最大有效期(秒)
+
+服务端准备Cookie：
+	response.addCookie(Cookie cookie)
+页面跳转（转发，重定向）
+客户端获取cookie：request.getCookie();
+a、服务端增加cookie：response对象；客户端获取对象；request对象；
+b、不能直接获取某一个单独对象，只能一次性将全部的cookie拿到
+
+通过F12可以发现 除了自己设置的Cookie对象外，还有一个name为JDSESSIONID的cookie
+建议cookie只保存英文数字，否则需要进行编码解码
+
+5、pageContext：Jsp页面容器
+6、application	全局对象
+application 全局对象
+String getContextPath() 虚拟路径
+String getRealPath()	绝对路径（虚拟路径相对的绝对路径）
+
+客户端第一次请求服务端时，如果服务端发现此请求没有JSESSIONID，则会创建一个拥有name＝JSESSIONID的cookie　并返回给客户端
+
+ａ、不是内置对象，要使用必须ｎｅｗ
+ｂ、但是，服务端会自动生成一个（服务端自动new一个cookie）naem＝JSESSIONID的cookie并返回给客户端
+
+
+
+7、config		配置对象
+8、page		当前jsp页面对象（相当于Java中的this）
+9、exception	异常对象
+
+四种范围对象：（小－－＞大）
+pageConText		jsp也买你容器	当前页面有效（页面跳转后无效）
+request			请求对象		同一次请求有效（请求转发后有效，重定向后无效）
+session			会话对象		同一次会话有效（无论怎么跳转，都有效，关闭/切换浏览器无效。登录-->退出
+application		全局对象		全局有效（整个项目运行期间都有效，切换浏览器仍然有效，关闭服务、其他项目无效）
+1、以上的4个范围对象，通过setAttribute()复制，通过getAttribute()取值；
+2、以上范围对象，尽量使用最小的范围。因为对象的范围越大，造成的性能损耗越大。
+
+以上四个对象共有的方法：
+Object getAttribute(String name)根据属性名，或者属性值
+void setAttribute(String name,Object obj) 设置属性值（新增，修改）
+	setAttribute("a", "b")：//如果a对象之前不存在，则新建一个对象；
+			       如果a对象之前已经存在，则将a的值改为b
+void removeAttribute(String name)： 根据属性名。删除对象。
+
+
+
+get与post请求方式的区别：
+a、get方式在地址栏显示请求信息(但是地址栏所容纳的信息有限，一般为4-5kb，如果请求数据存在大文件，图片等会出现地址栏无法容纳全部的数据而出错；post不会显示
+b、文件上传操作，必须是post
+推荐使用post
+
+统一请求编码request
+1、get方式请求 如果出现乱码，解决
+	new String（旧编码，新编码）；
+	name  = new String(name.getBytes("iso-8895-1","utf-8");
+2、修改server.xml,一次性的更改tomcat默认get提交方式的编码（utf-8）
+建议使用tomcat时，首先在server.xml中，统一get方式编码(utf-8).. URIEncoding="UTF-8"
+
+response:响应对象
+提供的方法：
+void addCookie(Cookie cookie); 服务端向客户端增加cookie对象
+void sendRedirect(String location) throws IOException; :页面跳转的一种方式（重定向）
+void setContetType(String type):设置服务端响应的编码(设置服务端的contentType类型)
+请求转发和重定向的区别：
+		请求转发		重定向
+地址栏是否改变	不变		改变
+
+是否保留第一次	保留		不保留
+请求时的数据
+
+请求的次数	1次		2次
+
+跳转发生的位置	服务器		客户端发出的第二次跳转
+
+
+
+
+
+
+
+
